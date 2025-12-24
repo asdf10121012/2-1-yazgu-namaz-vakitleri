@@ -101,3 +101,25 @@ define('CWEB_MASJIDAL_URL', plugin_dir_url(__FILE__) );
 
 require plugin_dir_path( __FILE__ ) . 'includes/function/functions.php';
 
+
+
+// Custom konum seçici JS dosyasını frontend'de yükle (sadece sitede görünen kısımda)
+function masjidal_enqueue_custom_scripts() {
+    // Sadece frontend'de yükle (admin panelinde değil)
+    if ( ! is_admin() ) {
+        wp_enqueue_script(
+            'custom-namaz-location',
+            plugins_url('/assets/js/custom-location-selector.js', __FILE__),
+            array('jquery'),  // jQuery bağımlılığı
+            '1.0',
+            true              // footer'da yükle
+        );
+
+        // Eğer AJAX veya localize ihtiyacın olursa buraya da ekleyebilirsin
+        wp_localize_script('custom-namaz-location', 'namazAjax', array(
+            'ajax_url' => admin_url('admin-ajax.php')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'masjidal_enqueue_custom_scripts');
+
